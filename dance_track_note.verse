@@ -33,6 +33,8 @@ dance_track_note := class(creative_device):
         set CurrentPosition = Start + (Velocity * CurrentTime)
 
     UpdateUIPosition(Position : vector2)<suspends> : void =
+        {}
+        # TODO : Reposition the UI representation of the note.
 
-        # Needs a UI representation before it can be updated
+    # TODO : Create a UI representation of the note
 
