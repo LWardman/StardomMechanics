@@ -22,7 +22,7 @@ dance_track_lane := class(creative_device):
             
             LaneUI := CreateLaneUI()
             PlayerUI.AddWidget(LaneUI)
-            if (set MaybeMyUIPerPlayer[InPlayer] = option{LaneUI}) {}
+            if (set MaybeUIPerPlayer[InPlayer] = option{LaneUI}) {}
 
     
     # TODO : Add a visual for where the player should press the lanes note key.
