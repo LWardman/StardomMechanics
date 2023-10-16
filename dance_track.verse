@@ -10,10 +10,10 @@ using { /UnrealEngine.com/Temporary/SpatialMath}
 dance_track := class(creative_device):
 
     @editable
-    MyButton : button_device = button_device{}
+    BeginDanceTrackButton : button_device = button_device{}
 
     OnBegin<override>()<suspends> : void =
-        MyButton.InteractedWithEvent.Subscribe(HandleButtonInteraction)
+        BeginDanceTrackButton.InteractedWithEvent.Subscribe(HandleButtonInteraction)
 
     HandleButtonInteraction(Agent : agent) : void =
 
