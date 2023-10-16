@@ -30,8 +30,9 @@ dance_track_note := class(creative_device):
     # Progress takes a value between 0 and 1.
     LerpCurrentPosition(Progress : float, Velocity : vector2)<suspends> : void =
         
-        set CurrentPosition = Velocity * CurrentTime
+        set CurrentPosition = Start + (Velocity * CurrentTime)
 
     UpdateUIPosition(Position : vector2)<suspends> : void =
-        
+
+        # Needs a UI representation before it can be updated
 
