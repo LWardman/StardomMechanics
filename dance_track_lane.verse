@@ -23,7 +23,7 @@ dance_track_lane := class(creative_device):
                 if (set MaybeMyUIPerPlayer[InPlayer] = option{NewUI}) {}
 
 
-    # A canvas widget that displays a color_block which acts as a track_lane
+    # A canvas widget that displays a color_block which acts as a track lane
     CreateMyUI() : canvas =
         MyCanvas : canvas = canvas:
             Slots := array:
