@@ -8,24 +8,27 @@ using { /UnrealEngine.com/Temporary/SpatialMath}
 
 dance_track_lane := class(creative_device):
 
+    # TODO : Declare which key the lane will use to activate a note. 
+
     # The anchors for the dance track lane, should be passed through in a constructor
     TrackAnchors : anchors = anchors{}
 
     # A mapping between the Player and the widget that may have been added to their UI
-    var MaybeMyUIPerPlayer : [player]?canvas = map{}   
+    var MaybeUIPerPlayer : [player]?canvas = map{}
 
     # This should be called right after a dance_track_lane is initialised
     InitialiseLaneUI(Agent : agent) : void =
         if (InPlayer := player[Agent], PlayerUI := GetPlayerUI[InPlayer]):
             
-                NewUI := CreateMyUI()
-                PlayerUI.AddWidget(NewUI)
-                if (set MaybeMyUIPerPlayer[InPlayer] = option{NewUI}) {}
+                LaneUI := CreateLaneUI()
+                PlayerUI.AddWidget(LaneUI)
+                if (set MaybeMyUIPerPlayer[InPlayer] = option{LaneUI}) {}
 
-
+    
+    # TODO : Add a visual for where the player should press the lanes note key.
     # A canvas widget that displays a color_block which acts as a track lane
-    CreateMyUI() : canvas =
-        MyCanvas : canvas = canvas:
+    CreateLaneUI() : canvas =
+        Canvas : canvas = canvas:
             Slots := array:
                 canvas_slot:
                     Anchors := TrackAnchors
@@ -35,4 +38,4 @@ dance_track_lane := class(creative_device):
                     Widget := color_block:
                         DefaultColor := NamedColors.LightGray
 
-        return MyCanvas
+        return Canvas
