@@ -3,6 +3,7 @@ using { /Fortnite.com/Devices }
 using { /Verse.org/Simulation }
 using { /UnrealEngine.com/Temporary/Diagnostics }
 using { /UnrealEngine.com/Temporary/SpatialMath }
+using { /UnrealEngine.com/Temporary/UI }
 
 
 dance_track_note := class(creative_device):
@@ -32,9 +33,32 @@ dance_track_note := class(creative_device):
         
         set CurrentPosition = Start + (Velocity * CurrentTime)
 
+    # This should be called right after a dance_track_note is initialised
+    InitialiseNoteUI(Agent : agent) : void =
+
+        if (InPlayer := player[Agent], PlayerUI := GetPlayerUI[InPlayer]):
+            
+            NoteUI := CreateNoteUI()
+            PlayerUI.AddWidget(NoteUI)
+            if (set MaybeUIPerPlayer[InPlayer] = option{NoteUI}) {}
+
+
     UpdateUIPosition(Position : vector2)<suspends> : void =
         {}
         # TODO : Reposition the UI representation of the note.
 
-    # TODO : Create a UI representation of the note
+    # Creates a UI representation of the note
+    CreateNoteUI() : canvas =
+        Canvas : canvas = canvas:
+            Slots := array:
+                canvas_slot:
+                    Anchors := anchors{Minimum := vector2{X := 0.5, Y := 0.5}, Maximum := vector2{X := 0.5, Y := 0.5}}
+                    Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
+                    Alignment := vector2{X := 0.5, Y := 0.5}
+                    SizeToContent := false
+                    Widget := texture_block:
+                        DefaultImage := Textures.Note
+                        DefaultDesiredSize := vector2{X := 128.0, Y := 128.0}
+
+        return Canvas
 
