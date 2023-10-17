@@ -24,12 +24,16 @@ dance_track_lane := class(creative_device):
             PlayerUI.AddWidget(LaneUI)
             if (set MaybeUIPerPlayer[InPlayer] = option{LaneUI}) {}
 
+    # TODO : Implement SpawnNote
+    SpawnNote() : void =
+        {}
     
     # TODO : Add a visual for where the player should press the lanes note key.
     # A canvas widget that displays a color_block which acts as a track lane
     CreateLaneUI() : canvas =
         Canvas : canvas = canvas:
             Slots := array:
+
                 canvas_slot:
                     Anchors := TrackAnchors
                     Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
@@ -37,5 +41,30 @@ dance_track_lane := class(creative_device):
                     SizeToContent := true
                     Widget := color_block:
                         DefaultColor := NamedColors.LightGray
+
+                canvas_slot:   
+                    Anchors := anchors{Minimum := vector2{X := TrackAnchors.Maximum.X - 0.05, Y := TrackAnchors.Minimum.Y}, Maximum := TrackAnchors.Maximum}
+                    Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
+                    Alignment := vector2{X := 0.5, Y := 0.5}
+                    SizeToContent := true
+                    Widget := color_block:
+                        DefaultColor := NamedColors.CornflowerBlue
+
+                canvas_slot:   
+                    Anchors := anchors{Minimum := vector2{X := TrackAnchors.Minimum.X + 0.05, Y := TrackAnchors.Minimum.Y}, Maximum := vector2{X := TrackAnchors.Minimum.X + 0.1, Y := TrackAnchors.Maximum.Y}}
+                    Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
+                    Alignment := vector2{X := 0.5, Y := 0.5}
+                    SizeToContent := true
+                    Widget := color_block:
+                        DefaultColor := NamedColors.ForestGreen
+
+                canvas_slot:   
+                    Anchors := anchors{Minimum := TrackAnchors.Minimum, Maximum := vector2{X := TrackAnchors.Minimum.X + 0.05, Y := TrackAnchors.Maximum.Y}}
+                    Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
+                    Alignment := vector2{X := 0.5, Y := 0.5}
+                    SizeToContent := true
+                    Widget := color_block:
+                        DefaultColor := NamedColors.Crimson
+
 
         return Canvas
