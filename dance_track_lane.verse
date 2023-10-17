@@ -6,6 +6,12 @@ using { /UnrealEngine.com/Temporary/UI }
 using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/SpatialMath}
 
+
+MakeDanceTrackLane<constructor>(_TrackAnchors : anchors, _Agent : agent) := dance_track_lane:
+    TrackAnchors := _TrackAnchors
+    Agent := option{_Agent}
+
+
 dance_track_lane := class(creative_device):
 
     # TODO : Declare which key the lane will use to activate a note. 
@@ -16,15 +22,30 @@ dance_track_lane := class(creative_device):
     # A mapping between the Player and the widget that may have been added to their UI
     var MaybeUIPerPlayer : [player]?canvas = map{}
 
+    # Keeps a reference to the agent who started the dance track.
+    Agent : ?agent := false
+
+    OnBegin<override>()<suspends> : void =
+
+        InitialiseLaneUI()
+
+
     # This should be called right after a dance_track_lane is initialised
-    InitialiseLaneUI(Agent : agent) : void =
-        if (InPlayer := player[Agent], PlayerUI := GetPlayerUI[InPlayer]):
+    InitialiseLaneUI() : void =
+
+        if (InPlayer := player[ValidAgent := Agent?], PlayerUI := GetPlayerUI[InPlayer]):
             
             LaneUI := CreateLaneUI()
             PlayerUI.AddWidget(LaneUI)
             if (set MaybeUIPerPlayer[InPlayer] = option{LaneUI}) {}
 
     # TODO : Implement SpawnNote
+    # 1. Get center position of the spawn area.
+    # 2. Get center position of the destruction area.
+    # 3. Spawn a note passing in the Spawn as Start and Destruction as End
+    # 4. Initialise Note UI
+    #
+    # OR, just spawn the note and trigger a constructor, let the note deal with it's implementation.
     SpawnNote() : void =
         {}
     
