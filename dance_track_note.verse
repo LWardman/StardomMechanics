@@ -15,6 +15,9 @@ dance_track_note := class(creative_device):
     TimeToComplete : float = 1.0
     var CurrentTime : float = 0.0
 
+    # A mapping between the Player and the widget that may have been added to their UI
+    var MaybeUIPerPlayer : [player]?canvas = map{}
+
     # Self-defined tick. e.g Tick(0.016) gives 60FPS behaviour.
     Tick(DeltaTime : float)<suspends> : void = 
         
