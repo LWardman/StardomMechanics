@@ -17,5 +17,6 @@ dance_track := class(creative_device):
 
     HandleButtonInteraction(Agent : agent) : void =
 
-        dance_track_lane1 := dance_track_lane{TrackAnchors := anchors{Minimum := vector2{X := 0.15, Y := 0.47}, Maximum := vector2{X := 0.85, Y := 0.53}}}
-        dance_track_lane1.InitialiseLaneUI(Agent);
+        MakeDanceTrackLane(TrackAnchors := anchors{Minimum := vector2{X := 0.15, Y := 0.47}, Maximum := vector2{X := 0.85, Y := 0.53}}, Agent)
+
+        
