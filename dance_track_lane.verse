@@ -19,8 +19,6 @@ MakeDanceTrackLane<constructor>(_TrackAnchors : anchors, _Agent : agent) := danc
 
 dance_track_lane := class(creative_device):
 
-    # TODO : Declare which key the lane will use to activate a note. 
-
     # The anchors for the dance track lane, should be passed through in a constructor
     TrackRegion : anchors = anchors{}
     NoteSpawnRegion : anchors = anchors{}
@@ -30,7 +28,7 @@ dance_track_lane := class(creative_device):
     # A mapping between the Player and the widget that may have been added to their UI
     var MaybeUIPerPlayer : [player]?canvas = map{}
 
-    # Keeps a reference to the agent who started the dance track.
+    # Keeps a reference to the agent who started the dance track, potentially invalid so must be checked when used.
     Agent : ?agent := false
 
     OnBegin<override>()<suspends> : void =
