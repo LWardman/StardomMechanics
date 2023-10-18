@@ -36,11 +36,11 @@ dance_track := class(creative_device):
 
     # TODO : Implement this function    
     HandleRemotePrimary(Agent : agent) : void =
-        Print("Primary bound")
+        LaneLeft.CatchNote()
 
 
     # TODO : Implement this function    
     HandleRemoteSecondary(Agent : agent) : void = 
-        Print("Secondary bound")
+        LaneRight.CatchNote()
 
         
