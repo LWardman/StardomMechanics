@@ -32,7 +32,7 @@ dance_track_lane := class(creative_device):
     @editable
     NoteTimeToTravel : float = 1.0
 
-    var NoteArray : []creative_prop_asset = array{}
+    var NoteArray : []creative_prop = array{}
 
     # Keeps a reference to the agent who started the dance track, potentially invalid so must be checked when used.
     Agent : ?agent := false
@@ -53,9 +53,23 @@ dance_track_lane := class(creative_device):
         Prop := SpawnedProp(0)
 
         if (Note := Prop?):
+            set NoteArray += array{Note}
             Result : move_to_result = Note.MoveTo(NoteDestructRegion, IdentityRotation(), NoteTimeToTravel)
             if (Result = move_to_result.DestinationReached):
+                if (set NoteArray = NoteArray.RemoveElement[0]) {}
+                    
                 Note.Dispose()
+
+    CatchNote() : void = 
+        Print("Catching Note")
+        if (Note := NoteArray[0]):
+
+            Print("Found the Note")
+
+            if (set NoteArray = NoteArray.RemoveElement[0]) {}
+
+            Note.Dispose()
+        
 
 
             
