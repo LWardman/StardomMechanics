@@ -33,7 +33,7 @@ dance_track_note := class(creative_device):
         
         Tick(DeltaTime:float = 0.016)
 
-    # Self-defined tick. e.g Tick(0.016) gives 60FPS behaviour.
+    # e.g Tick(0.016) gives 60FPS behaviour.
     Tick(DeltaTime : float)<suspends> : void = 
         
         Velocity : vector2 = (End - Start) / TimeToComplete
