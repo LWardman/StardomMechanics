@@ -34,13 +34,13 @@ dance_track := class(creative_device):
         Print("Button Pressed")
         
 
-    # TODO : Implement this function    
     HandleRemotePrimary(Agent : agent) : void =
+        
         LaneLeft.CatchNote()
 
-
-    # TODO : Implement this function    
+ 
     HandleRemoteSecondary(Agent : agent) : void = 
+
         LaneRight.CatchNote()
 
         
