@@ -25,7 +25,7 @@ dance_track_lane := class(creative_device):
     @editable
     NoteTimeToTravel : float = 2.0
 
-    var Timer : float = 0.0
+    var Notes : []creative_prop = array{}
 
 
     OnBegin<override>()<suspends> : void =
@@ -39,13 +39,46 @@ dance_track_lane := class(creative_device):
         Prop := SpawnedProp(0)
 
         if (Note := Prop?):
+            set Notes += array{Note}
             spawn{Note.MoveTo(NoteDestructRegion, IdentityRotation(), NoteTimeToTravel)}
 
-    # Get closest note in the lane
-    # Calculate it's score
-    # Update the Note's score variable
+    
     CatchNote() : void = 
-        {}
+        
+        ClosestNote : tuple(creative_prop, float) = GetClosestNote()
+        Note := ClosestNote(0)
+        DistanceSquare := ClosestNote(1)
+
+        NoteScore : float = CalculateScoreOfCaughtNote(DistanceSquare)
+        # Update the Note's score variable
 
 
+    GetClosestNote() : tuple(creative_prop, float) =
+        
+        var ClosestNote : creative_prop = creative_prop{}
+        var ClosestDistanceSquare : float = 1000000.0               # Set high so that any note will always pass this test.
+
+        for (Note : Notes):
+
+            NoteLocation : vector3 = Note.GetTransform().Translation
+
+            Delta : vector3 = NoteLocation - NoteCatchRegion
+
+            DistanceSquare : float = SquareMagnitude(Delta)
+
+            if (DistanceSquare < ClosestDistanceSquare):
+                set ClosestNote = Note
+                set ClosestDistanceSquare = DistanceSquare
+
+        return (ClosestNote, ClosestDistanceSquare)
+
+    
+    SquareMagnitude(Vector : vector3) : float =
+
+        MagnitudeSquared : float = Vector.X * Vector.X + Vector.Y * Vector.Y + Vector.Z * Vector.Z
+        return MagnitudeSquared
+
+    CalculateScoreOfCaughtNote(DistanceSquare : float) : float =
+        Print("{0.0}")
+        return 0.0
     
