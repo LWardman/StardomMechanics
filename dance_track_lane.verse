@@ -27,6 +27,8 @@ dance_track_lane := class(creative_device):
 
     var Notes : []creative_prop = array{}
 
+    var Scores : []float = array{}
+
 
     OnBegin<override>()<suspends> : void =
 
@@ -50,7 +52,7 @@ dance_track_lane := class(creative_device):
         DistanceSquare := ClosestNote(1)
 
         NoteScore : float = CalculateScoreOfCaughtNote(DistanceSquare)
-        # Update the Note's score variable
+        set Scores += array{NoteScore}
 
 
     GetClosestNote() : tuple(creative_prop, float) =
@@ -72,13 +74,38 @@ dance_track_lane := class(creative_device):
 
         return (ClosestNote, ClosestDistanceSquare)
 
+
+    CalculateScoreOfCaughtNote(DistanceSquare : float) : float =
+
+        var Score : float = 100.0
+
+        Penalty : float = DistanceSquare * 0.05
+
+        set Score = Max(Score - Penalty, 0.0)
+
+        return Score
+
+    CalculateOverallScore() : float =
+
+        var OverallScore : float = 0.0
+
+        FillOutEmptyScores()
+
+        for (Score : Scores):
+            set OverallScore += Score
+
+        return OverallScore
+
     
+    FillOutEmptyScores() : void =
+
+        if (Scores.Length < Notes.Length):
+            for (X := 1..(Notes.Length - Scores.Length)):
+                set Scores += array{0.0}                    # Appends an empty score for each note missed.
+
+
     SquareMagnitude(Vector : vector3) : float =
 
         MagnitudeSquared : float = Vector.X * Vector.X + Vector.Y * Vector.Y + Vector.Z * Vector.Z
-        return MagnitudeSquared
-
-    CalculateScoreOfCaughtNote(DistanceSquare : float) : float =
-        Print("{0.0}")
-        return 0.0
+        return MagnitudeSquared   
     
