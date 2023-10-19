@@ -69,4 +69,21 @@ dance_track := class(creative_device):
                 LaneRight.SpawnNote()
 
             Sleep(Movement.TimeUntilNextNote)
+
+        Sleep(2.0)
+        Print("{GetFinishedScore()}")
+
+    GetFinishedScore() : float =
+        OverallScore : float = (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / GetFloatLengthOfMovements()
+
+    GetFloatLengthOfMovements() : float =
+        var Result : float = 0.0
+
+        for (Movement : Movements):
+            set Result += 1.0
+
+        return Result
+
+
+
         
