@@ -2,20 +2,13 @@
 using { /Fortnite.com/Devices }
 using { /Verse.org/Simulation }
 using { /UnrealEngine.com/Temporary/SpatialMath}
-
-
-MakeDanceTrackLane<constructor>(_Agent : agent) := dance_track_lane:
-
-    Agent := option{_Agent}
+using { /Verse.org/Assets }
 
 
 dance_track_lane := class(creative_device):
 
     @editable
     NoteProp : creative_prop_asset := DefaultCreativePropAsset
-
-    @editable
-    SpawnCover : creative_prop_asset := DefaultCreativePropAsset
 
     @editable
     CatchIndicator : creative_prop_asset := DefaultCreativePropAsset
@@ -30,53 +23,29 @@ dance_track_lane := class(creative_device):
     NoteDestructRegion : vector3 = vector3{}
 
     @editable
-    NoteTimeToTravel : float = 1.0
+    NoteTimeToTravel : float = 2.0
 
-    var NoteArray : []creative_prop = array{}
-
-    # Keeps a reference to the agent who started the dance track, potentially invalid so must be checked when used.
-    Agent : ?agent := false
+    var Timer : float = 0.0
 
 
     OnBegin<override>()<suspends> : void =
 
         SpawnedCatchIndicator := SpawnProp(CatchIndicator, NoteCatchRegion, IdentityRotation())
+    
 
-        loop:
-            SpawnNote()
-            Sleep(1.0)
-
-
-    SpawnNote()<suspends> : void =
+    SpawnNote() : void =
 
         SpawnedProp := SpawnProp(NoteProp, NoteSpawnRegion, IdentityRotation())
         Prop := SpawnedProp(0)
 
         if (Note := Prop?):
-            set NoteArray += array{Note}
-            Result : move_to_result = Note.MoveTo(NoteDestructRegion, IdentityRotation(), NoteTimeToTravel)
-            if (Result = move_to_result.DestinationReached):
-                if (set NoteArray = NoteArray.RemoveElement[0]) {}
-                    
-                Note.Dispose()
+            spawn{Note.MoveTo(NoteDestructRegion, IdentityRotation(), NoteTimeToTravel)}
 
+    # Get closest note in the lane
+    # Calculate it's score
+    # Update the Note's score variable
     CatchNote() : void = 
-        Print("Catching Note")
-        if (Note := NoteArray[0]):
+        {}
 
-            Print("Found the Note")
-
-            if (set NoteArray = NoteArray.RemoveElement[0]) {}
-
-            Note.Dispose()
-        
-
-
-            
 
     
-
-
-
-
-
