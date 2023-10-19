@@ -33,12 +33,10 @@ dance_track := class(creative_device):
 
         InitialiseMovements()
 
-        CycleThroughMovements()
-
 
     HandleButtonInteraction(Agent : agent) : void =
 
-        Print("Button Pressed")
+        spawn{CycleThroughMovements()}
         
 
     HandleRemotePrimary(Agent : agent) : void =
@@ -55,9 +53,9 @@ dance_track := class(creative_device):
         
         for (NoteID := 1..30):
             if (Mod[NoteID, 3] = 0):
-                set Movements += array{MakeDanceNote("R", 0.5)}
+                set Movements += array{MakeDanceNote("R", 0.6)}
             else:
-                set Movements += array{MakeDanceNote("L", 0.3)}
+                set Movements += array{MakeDanceNote("L", 0.4)}
 
     
     CycleThroughMovements()<suspends> : void = 
