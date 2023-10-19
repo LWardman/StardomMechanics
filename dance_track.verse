@@ -21,12 +21,19 @@ dance_track := class(creative_device):
     @editable
     SignalRemoteGrey : signal_remote_manager_device = signal_remote_manager_device{}
 
+    var Movements : []dance_note = array{}
+
+
     OnBegin<override>()<suspends> : void =
 
         BeginDanceTrackButton.InteractedWithEvent.Subscribe(HandleButtonInteraction)
 
         SignalRemoteGrey.PrimarySignalEvent.Subscribe(HandleRemotePrimary)
         SignalRemoteGrey.SecondarySignalEvent.Subscribe(HandleRemoteSecondary)
+
+        InitialiseMovements()
+
+        CycleThroughMovements()
 
 
     HandleButtonInteraction(Agent : agent) : void =
@@ -43,4 +50,25 @@ dance_track := class(creative_device):
 
         LaneRight.CatchNote()
 
+
+    InitialiseMovements() : void = 
+        
+        for (NoteID := 1..30):
+            if (Mod[NoteID, 3] = 0):
+                set Movements += array{MakeDanceNote("R", 0.5)}
+            else:
+                set Movements += array{MakeDanceNote("L", 0.3)}
+
+    
+    CycleThroughMovements()<suspends> : void = 
+        
+        for (Movement : Movements):
+
+            if (Movement.Lane = "L"):
+                LaneLeft.SpawnNote()
+
+            if (Movement.Lane = "R"):
+                LaneRight.SpawnNote()
+
+            Sleep(Movement.TimeUntilNextNote)
         
