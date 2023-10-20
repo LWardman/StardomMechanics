@@ -33,9 +33,11 @@ dance_track := class(creative_device):
 
 
     ScoreWidget<private> : text_block = text_block{DefaultTextColor := NamedColors.White}
+    
     ScoreText<localizes><private>(Score : float) : message = "{Score}"
 
     var MaybeUIPerPlayer<private> : [player]?canvas = map{}
+
     var PlayerAgent<private> : ?agent := false
 
     var Movements<private> : []dance_note = array{}
@@ -86,9 +88,10 @@ dance_track := class(creative_device):
     GetFinishedScore<private>() : float =
 
         OverallScore : float = (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / GetFloatLengthOfMovements()
+        return OverallScore
 
 
-    GetFloatLengthOfMovements<private>() : float =
+    GetFloatLengthOfMovements<private>()<transacts> : float =
 
         var Result : float = 0.0
 
