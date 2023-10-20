@@ -31,7 +31,6 @@ dance_track := class(creative_device):
     @editable
     SignalRemoteGrey<private> : signal_remote_manager_device = signal_remote_manager_device{}
 
-
     ScoreWidget<private> : text_block = text_block{DefaultTextColor := NamedColors.White}
 
     ScoreText<localizes><private>(Score : float) : message = "{Score}"
