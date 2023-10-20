@@ -12,7 +12,7 @@ dance_track_lane := class(creative_device):
         SpawnedCatchIndicator := SpawnProp(CatchIndicator, NoteCatchRegion, IdentityRotation())
     
 
-    CalculateOverallScore<public>() : float =
+    CalculateOverallScore<public>()<transacts> : float =
 
         var OverallScore : float = 0.0
 
@@ -68,7 +68,7 @@ dance_track_lane := class(creative_device):
     var Scores<private> : []float = array{}
 
 
-    GetClosestNote<private>() : tuple(creative_prop, float) =
+    GetClosestNote<private>()<transacts> : tuple(creative_prop, float) =
         
         var ClosestNote : creative_prop = creative_prop{}
         var ClosestDistanceSquare : float = 1000000.0               # Set high so that any note will always pass this test.
@@ -88,7 +88,7 @@ dance_track_lane := class(creative_device):
         return (ClosestNote, ClosestDistanceSquare)
 
 
-    CalculateScoreOfCaughtNote<private>(DistanceSquare : float) : float =
+    CalculateScoreOfCaughtNote<private>(DistanceSquare : float)<transacts> : float =
 
         var Score : float = 100.0
 
@@ -99,15 +99,14 @@ dance_track_lane := class(creative_device):
         return Score
         
     
-    FillOutEmptyScores<private>() : void =
+    FillOutEmptyScores<private>()<transacts> : void =
 
         if (Scores.Length < Notes.Length):
             for (X := 1..(Notes.Length - Scores.Length)):
                 set Scores += array{0.0}                    # Appends an empty score for each note missed.
 
 
-    SquareMagnitude<private>(Vector : vector3) : float =
+    SquareMagnitude<private>(Vector : vector3)<computes> : float =
 
         MagnitudeSquared : float = Vector.X * Vector.X + Vector.Y * Vector.Y + Vector.Z * Vector.Z
         return MagnitudeSquared   
-        
