@@ -7,16 +7,18 @@ using { /Verse.org/Assets }
 
 dance_track_lane := class(creative_device):
 
+    # Called at the start of the game.
     OnBegin<override>()<suspends> : void =
 
         SpawnedCatchIndicator := SpawnProp(CatchIndicator, NoteCatchRegion, IdentityRotation())
     
 
+    # Will calculate the cumulative score of each note.
     CalculateOverallScore<public>()<transacts> : float =
 
         var OverallScore : float = 0.0
 
-        FillOutEmptyScores()
+        FillOutEmptyScores()                                # Gives a score of 0 to each note that the player missed.
 
         for (Score : Scores):
             set OverallScore += Score
@@ -71,15 +73,15 @@ dance_track_lane := class(creative_device):
     GetClosestNote<private>()<transacts> : tuple(creative_prop, float) =
         
         var ClosestNote : creative_prop = creative_prop{}
-        var ClosestDistanceSquare : float = 1000000.0               # Set high so that any note will always pass this test.
+        var ClosestDistanceSquare : float = 1000000.0       # Set high so that any note will always pass this test.
 
-        for (Note : Notes):
+        for (Note : Notes):                                 # Note : Using distance squared to avoid square rooting, which can be expensive.
 
             NoteLocation : vector3 = Note.GetTransform().Translation
 
             Delta : vector3 = NoteLocation - NoteCatchRegion
 
-            DistanceSquare : float = SquareMagnitude(Delta)
+            DistanceSquare : float = Delta.X * Delta.X + Delta.Y * Delta.Y + Delta.Z * Delta.Z
 
             if (DistanceSquare < ClosestDistanceSquare):
                 set ClosestNote = Note
@@ -92,7 +94,9 @@ dance_track_lane := class(creative_device):
 
         var Score : float = 100.0
 
-        Penalty : float = DistanceSquare * 0.02
+        Leniency : float = 0.02                             # Decrease this to increase average player score and vice versa
+
+        Penalty : float = DistanceSquare * Leniency
 
         set Score = Max(Score - Penalty, 0.0)
 
@@ -104,9 +108,3 @@ dance_track_lane := class(creative_device):
         if (Scores.Length < Notes.Length):
             for (X := 1..(Notes.Length - Scores.Length)):
                 set Scores += array{0.0}                    # Appends an empty score for each note missed.
-
-
-    SquareMagnitude<private>(Vector : vector3)<computes> : float =
-
-        MagnitudeSquared : float = Vector.X * Vector.X + Vector.Y * Vector.Y + Vector.Z * Vector.Z
-        return MagnitudeSquared   
