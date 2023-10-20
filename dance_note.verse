@@ -5,8 +5,8 @@ MakeDanceNote<constructor>(_Lane : string, _TimeUntilNextNote : float) := dance_
     Lane := _Lane
     TimeUntilNextNote := _TimeUntilNextNote
 
-dance_note := class:
+dance_note<public> := class<final>:
 
-    Lane : string
+    Lane<public> : string
 
-    TimeUntilNextNote : float
+    TimeUntilNextNote<public> : float
