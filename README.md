@@ -2,6 +2,7 @@ The files containing my personal verse code are the ones located in the root fol
 
 These files intend to show competence at...
 - Creating UI
+- Creating devices
 - Manipulating existing devices
 - Binding and recieving events
 - Linear Algebra
