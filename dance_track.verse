@@ -9,9 +9,10 @@ using { /UnrealEngine.com/Temporary/SpatialMath}
 
 dance_track := class(creative_device):
 
+    # Called at the beginning of play.
     OnBegin<override>()<suspends> : void =
 
-        BeginDanceTrackButton.InteractedWithEvent.Subscribe(HandleButtonInteraction)
+        BeginDanceTrackButton.InteractedWithEvent.Subscribe(HandleBeginDanceTrackButtonInteraction)
 
         SignalRemoteGrey.PrimarySignalEvent.Subscribe(HandleRemotePrimary)
         SignalRemoteGrey.SecondarySignalEvent.Subscribe(HandleRemoteSecondary)
@@ -21,31 +22,36 @@ dance_track := class(creative_device):
 
     @editable
     BeginDanceTrackButton<private> : button_device = button_device{}
+    
 
+    # Lane left and Lane right are the lane's where dance_notes will be sent down for the player to catch.
     @editable
     LaneLeft<private> : dance_track_lane = dance_track_lane{}
 
     @editable
     LaneRight<private> : dance_track_lane = dance_track_lane{}
 
+
+    # The player must use a signal_remote to hit the notes. NOTE : This restricts the dance track to a maximum of two possible lanes.
     @editable
     SignalRemoteGrey<private> : signal_remote_manager_device = signal_remote_manager_device{}
 
+    # Score widget and it's text will be displayed after the dance track is completed.
     ScoreWidget<private> : text_block = text_block{DefaultTextColor := NamedColors.White}
-
     ScoreText<localizes><private>(Score : float) : message = "{Score}"
 
+    # MaybeUIPerPlayer and PlayerAgent are only used to display the score to the player.
     var MaybeUIPerPlayer<private> : [player]?canvas = map{}
-
     var PlayerAgent<private> : ?agent := false
 
+    # Storage used to feed notes into each lane.
     var Movements<private> : []dance_note = array{}
 
 
-    HandleButtonInteraction<private>(Agent : agent) : void =
+    HandleBeginDanceTrackButtonInteraction<private>(Agent : agent) : void =
 
         set PlayerAgent = option{Agent}
-        spawn{CycleThroughMovements()}
+        spawn{CycleThroughMovementsThenShowScore()}
         
 
     HandleRemotePrimary<private>(Agent : agent) : void =
@@ -58,8 +64,10 @@ dance_track := class(creative_device):
         LaneRight.CatchNote()
 
 
+    # Here is where to change the pattern that the notes come out in. 
     InitialiseMovements<private>() : void = 
         
+        # Creates a "L", "L" , "R" pattern and repeats it 10 times.
         for (NoteID := 1..30):
             if (Mod[NoteID, 3] = 0):
                 set Movements += array{MakeDanceNote("R", 0.6)}
@@ -67,7 +75,7 @@ dance_track := class(creative_device):
                 set Movements += array{MakeDanceNote("L", 0.4)}
 
     
-    CycleThroughMovements<private>()<suspends> : void = 
+    CycleThroughMovementsThenShowScore<private>()<suspends> : void = 
         
         for (Movement : Movements):
 
@@ -79,15 +87,15 @@ dance_track := class(creative_device):
 
             Sleep(Movement.TimeUntilNextNote)
 
-        Sleep(2.0)
+        Sleep(2.0) # Waits two seconds before displaying the score.
+
         ScoreWidget.SetText(ScoreText(GetFinishedScore()))
         InitialiseScoreUI()
 
-
+    # Score is calculated as the arithmetic mean that the player scored on all their notes.
     GetFinishedScore<private>() : float =
 
-        OverallScore : float = (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / (Movements.Length * 1.0)
-        return OverallScore
+        return (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / (Movements.Length * 1.0)    
 
     
     InitialiseScoreUI<private>() : void =
