@@ -7,35 +7,24 @@ using { /Verse.org/Assets }
 
 dance_track_lane := class(creative_device):
 
-    @editable
-    NoteProp : creative_prop_asset := DefaultCreativePropAsset
-
-    @editable
-    CatchIndicator : creative_prop_asset := DefaultCreativePropAsset
-
-    @editable
-    NoteSpawnRegion : vector3 = vector3{}
-
-    @editable
-    NoteCatchRegion : vector3 = vector3{}
-
-    @editable
-    NoteDestructRegion : vector3 = vector3{}
-
-    @editable
-    NoteTimeToTravel : float = 2.0
-
-    var Notes : []creative_prop = array{}
-
-    var Scores : []float = array{}
-
-
     OnBegin<override>()<suspends> : void =
 
         SpawnedCatchIndicator := SpawnProp(CatchIndicator, NoteCatchRegion, IdentityRotation())
     
 
-    SpawnNote() : void =
+    CalculateOverallScore<public>() : float =
+
+        var OverallScore : float = 0.0
+
+        FillOutEmptyScores()
+
+        for (Score : Scores):
+            set OverallScore += Score
+
+        return OverallScore
+
+
+    SpawnNote<public>() : void =
 
         SpawnedProp := SpawnProp(NoteProp, NoteSpawnRegion, IdentityRotation())
         Prop := SpawnedProp(0)
@@ -45,7 +34,7 @@ dance_track_lane := class(creative_device):
             spawn{Note.MoveTo(NoteDestructRegion, IdentityRotation(), NoteTimeToTravel)}
 
     
-    CatchNote() : void = 
+    CatchNote<public>() : void = 
         
         ClosestNote : tuple(creative_prop, float) = GetClosestNote()
         Note := ClosestNote(0)
@@ -55,7 +44,31 @@ dance_track_lane := class(creative_device):
         set Scores += array{NoteScore}
 
 
-    GetClosestNote() : tuple(creative_prop, float) =
+
+    @editable
+    NoteProp<private> : creative_prop_asset := DefaultCreativePropAsset
+
+    @editable
+    CatchIndicator<private> : creative_prop_asset := DefaultCreativePropAsset
+
+    @editable
+    NoteSpawnRegion<private> : vector3 = vector3{}
+
+    @editable
+    NoteCatchRegion<private> : vector3 = vector3{}
+
+    @editable
+    NoteDestructRegion<private> : vector3 = vector3{}
+
+    @editable
+    NoteTimeToTravel<private> : float = 2.0
+
+    var Notes<private> : []creative_prop = array{}
+
+    var Scores<private> : []float = array{}
+
+
+    GetClosestNote<private>() : tuple(creative_prop, float) =
         
         var ClosestNote : creative_prop = creative_prop{}
         var ClosestDistanceSquare : float = 1000000.0               # Set high so that any note will always pass this test.
@@ -75,7 +88,7 @@ dance_track_lane := class(creative_device):
         return (ClosestNote, ClosestDistanceSquare)
 
 
-    CalculateScoreOfCaughtNote(DistanceSquare : float) : float =
+    CalculateScoreOfCaughtNote<private>(DistanceSquare : float) : float =
 
         var Score : float = 100.0
 
@@ -84,28 +97,17 @@ dance_track_lane := class(creative_device):
         set Score = Max(Score - Penalty, 0.0)
 
         return Score
-
-    CalculateOverallScore() : float =
-
-        var OverallScore : float = 0.0
-
-        FillOutEmptyScores()
-
-        for (Score : Scores):
-            set OverallScore += Score
-
-        return OverallScore
-
+        
     
-    FillOutEmptyScores() : void =
+    FillOutEmptyScores<private>() : void =
 
         if (Scores.Length < Notes.Length):
             for (X := 1..(Notes.Length - Scores.Length)):
                 set Scores += array{0.0}                    # Appends an empty score for each note missed.
 
 
-    SquareMagnitude(Vector : vector3) : float =
+    SquareMagnitude<private>(Vector : vector3) : float =
 
         MagnitudeSquared : float = Vector.X * Vector.X + Vector.Y * Vector.Y + Vector.Z * Vector.Z
         return MagnitudeSquared   
-    
+        
