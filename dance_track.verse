@@ -9,26 +9,6 @@ using { /UnrealEngine.com/Temporary/SpatialMath}
 
 dance_track := class(creative_device):
 
-    @editable
-    BeginDanceTrackButton : button_device = button_device{}
-
-    @editable
-    LaneLeft : dance_track_lane = dance_track_lane{}
-
-    @editable
-    LaneRight : dance_track_lane = dance_track_lane{}
-
-    @editable
-    SignalRemoteGrey : signal_remote_manager_device = signal_remote_manager_device{}
-
-    var Movements : []dance_note = array{}
-
-    ScoreWidget : text_block = text_block{DefaultTextColor := NamedColors.White}
-    ScoreText<localizes>(Score : float) : message = "{Score}"
-
-    var MaybeUIPerPlayer : [player]?canvas = map{}
-    var PlayerAgent : ?agent := false
-
     OnBegin<override>()<suspends> : void =
 
         BeginDanceTrackButton.InteractedWithEvent.Subscribe(HandleButtonInteraction)
@@ -39,23 +19,45 @@ dance_track := class(creative_device):
         InitialiseMovements()
 
 
-    HandleButtonInteraction(Agent : agent) : void =
+    @editable
+    BeginDanceTrackButton<private> : button_device = button_device{}
+
+    @editable
+    LaneLeft<private> : dance_track_lane = dance_track_lane{}
+
+    @editable
+    LaneRight<private> : dance_track_lane = dance_track_lane{}
+
+    @editable
+    SignalRemoteGrey<private> : signal_remote_manager_device = signal_remote_manager_device{}
+
+
+    ScoreWidget<private> : text_block = text_block{DefaultTextColor := NamedColors.White}
+    ScoreText<localizes><private>(Score : float) : message = "{Score}"
+
+    var MaybeUIPerPlayer<private> : [player]?canvas = map{}
+    var PlayerAgent<private> : ?agent := false
+
+    var Movements<private> : []dance_note = array{}
+
+
+    HandleButtonInteraction<private>(Agent : agent) : void =
 
         set PlayerAgent = option{Agent}
         spawn{CycleThroughMovements()}
         
 
-    HandleRemotePrimary(Agent : agent) : void =
+    HandleRemotePrimary<private>(Agent : agent) : void =
         
         LaneLeft.CatchNote()
 
  
-    HandleRemoteSecondary(Agent : agent) : void = 
+    HandleRemoteSecondary<private>(Agent : agent) : void = 
 
         LaneRight.CatchNote()
 
 
-    InitialiseMovements() : void = 
+    InitialiseMovements<private>() : void = 
         
         for (NoteID := 1..30):
             if (Mod[NoteID, 3] = 0):
@@ -64,7 +66,7 @@ dance_track := class(creative_device):
                 set Movements += array{MakeDanceNote("L", 0.4)}
 
     
-    CycleThroughMovements()<suspends> : void = 
+    CycleThroughMovements<private>()<suspends> : void = 
         
         for (Movement : Movements):
 
@@ -81,11 +83,12 @@ dance_track := class(creative_device):
         InitialiseScoreUI()
 
 
-    GetFinishedScore() : float =
+    GetFinishedScore<private>() : float =
 
         OverallScore : float = (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / GetFloatLengthOfMovements()
 
-    GetFloatLengthOfMovements() : float =
+
+    GetFloatLengthOfMovements<private>() : float =
 
         var Result : float = 0.0
 
@@ -95,7 +98,7 @@ dance_track := class(creative_device):
         return Result
 
     
-    InitialiseScoreUI() : void =
+    InitialiseScoreUI<private>() : void =
 
         if (InPlayer := player[ValidAgent := PlayerAgent?], PlayerUI := GetPlayerUI[InPlayer]):
             
@@ -104,7 +107,7 @@ dance_track := class(creative_device):
             if (set MaybeUIPerPlayer[InPlayer] = option{LaneUI}) {}
 
     
-    CreateScoreUI() : canvas =
+    CreateScoreUI<private>() : canvas =
         Canvas : canvas = canvas:
             Slots := array:
                 canvas_slot:
@@ -117,5 +120,3 @@ dance_track := class(creative_device):
                     Widget := ScoreWidget
                 
         return Canvas
-
-        
