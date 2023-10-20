@@ -23,6 +23,11 @@ dance_track := class(creative_device):
 
     var Movements : []dance_note = array{}
 
+    ScoreWidget : text_block = text_block{DefaultTextColor := NamedColors.White}
+    ScoreText<localizes>(Score : float) : message = "{Score}"
+
+    var MaybeUIPerPlayer : [player]?canvas = map{}
+    var PlayerAgent : ?agent := false
 
     OnBegin<override>()<suspends> : void =
 
@@ -36,6 +41,7 @@ dance_track := class(creative_device):
 
     HandleButtonInteraction(Agent : agent) : void =
 
+        set PlayerAgent = option{Agent}
         spawn{CycleThroughMovements()}
         
 
@@ -71,12 +77,16 @@ dance_track := class(creative_device):
             Sleep(Movement.TimeUntilNextNote)
 
         Sleep(2.0)
-        Print("{GetFinishedScore()}")
+        ScoreWidget.SetText(ScoreText(GetFinishedScore()))
+        InitialiseScoreUI()
+
 
     GetFinishedScore() : float =
+
         OverallScore : float = (LaneLeft.CalculateOverallScore() + LaneRight.CalculateOverallScore()) / GetFloatLengthOfMovements()
 
     GetFloatLengthOfMovements() : float =
+
         var Result : float = 0.0
 
         for (Movement : Movements):
@@ -84,6 +94,28 @@ dance_track := class(creative_device):
 
         return Result
 
+    
+    InitialiseScoreUI() : void =
 
+        if (InPlayer := player[ValidAgent := PlayerAgent?], PlayerUI := GetPlayerUI[InPlayer]):
+            
+            LaneUI := CreateScoreUI()
+            PlayerUI.AddWidget(LaneUI)
+            if (set MaybeUIPerPlayer[InPlayer] = option{LaneUI}) {}
+
+    
+    CreateScoreUI() : canvas =
+        Canvas : canvas = canvas:
+            Slots := array:
+                canvas_slot:
+                    Anchors := anchors:
+                        Minimum := vector2{X := 0.5, Y := 0.05}
+                        Maximum := vector2{X := 0.5, Y := 0.05}
+                    Offsets := margin{Top := 0.0, Left := 0.0, Right := 0.0, Bottom := 0.0}
+                    Alignment := vector2{X := 0.5, Y := 0.5}
+                    SizeToContent := true
+                    Widget := ScoreWidget
+                
+        return Canvas
 
         
