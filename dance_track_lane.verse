@@ -79,7 +79,7 @@ dance_track_lane := class(creative_device):
 
         var Score : float = 100.0
 
-        Penalty : float = DistanceSquare * 0.05
+        Penalty : float = DistanceSquare * 0.02
 
         set Score = Max(Score - Penalty, 0.0)
 
