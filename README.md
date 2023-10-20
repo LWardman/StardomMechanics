@@ -1,7 +1,8 @@
-The files containing my personal verse code are the ones located in the root folder that end in .verse (Or any that don't say Initial Commit).
+The files containing my personal verse code are the ones located in the root folder that end in .verse (Should be the bottom three files).
 
 These files intend to show competence at...
 - Creating UI
+- Creating devices
 - Manipulating existing devices
 - Binding and recieving events
 - Linear Algebra
